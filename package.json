@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "mock:bff": "specmatic-enterprise mock --config specmatic.yaml"
+    "mock:bff": "specmatic-enterprise mock"
   },
   "dependencies": {
     "react": "^19.2.0",
