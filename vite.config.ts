@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 
 const bffTarget = process.env.VITE_BFF_URL || 'http://localhost:4400'
@@ -18,4 +18,11 @@ export default defineConfig({
       },
     },
   },
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    globals: true,
+    testTimeout: 120000,
+    hookTimeout: 120000
+  }
 })
