@@ -1,0 +1,28 @@
+version: 3
+dependencies:
+  services:
+    - service:
+        $ref: "#/components/services/webBff"
+        runOptions:
+          $ref: "#/components/runOptions/webBffMock"
+components:
+  sources:
+    centralContractRepo:
+      git:
+        url: https://github.com/specmatic-demo/central-contract-repository
+  services:
+    webBff:
+      description: "Web BFF GraphQL dependency"
+      definitions:
+        - definition:
+            source:
+              $ref: "#/components/sources/centralContractRepo"
+            specs:
+              - spec:
+                  path: "contracts/services/web-bff/graphql/schema.graphql"
+  runOptions:
+    webBffMock:
+      graphqlsdl:
+        type: mock
+        host: localhost
+        port: 4400
