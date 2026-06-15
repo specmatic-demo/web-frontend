@@ -1,73 +1,61 @@
-# React + TypeScript + Vite
+# web-frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository is a consumer-only repo.
 
-Currently, two official plugins are available:
+It consumes the `web-bff` GraphQL contract from the `migrated_to_federated_repo` branch of:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `https://github.com/specmatic-demo/web-bff`
 
-## React Compiler
+The consumed spec path is:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `specs/schema.graphql`
 
-## Expanding the ESLint configuration
+## Start the dependency mock
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Run this from the `web-frontend` repository root:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+docker run --rm -it \
+  -v "$(pwd):/usr/src/app" \
+  -v ~/.specmatic:/root/.specmatic \
+  -w /usr/src/app \
+  --network=host \
+  specmatic/enterprise \
+  mock
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+This starts the `web-bff` GraphQL mock on `localhost:4400`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Run frontend tests
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+If you have not already installed dependencies locally, first run:
+
+```bash
+npm install
+```
+
+Then run this from the `web-frontend` repository root:
+
+```bash
+npm test
+```
+
+The test setup starts Specmatic mock automatically as part of the Vitest lifecycle as well, but the explicit mock command above is useful when validating the dependency setup directly.
+
+## Send the service test report to Insights
+
+After the test run completes, run this from the `web-frontend` repository root:
+
+```bash
+docker run -it \
+  -v "$(pwd):/usr/src/app" \
+  -v ~/.specmatic:/root/.specmatic \
+  -w /usr/src/app \
+  --network=host \
+  specmatic/specmatic \
+  send-report \
+  --branch-name=main \
+  --repo-name="$(gh repo view --json name -q .name)" \
+  --repo-id="$(gh api 'repos/{owner}/{repo}' --jq .id)" \
+  --repo-url="$(gh repo view --json url --jq .url)"
 ```

@@ -7,19 +7,19 @@ dependencies:
           $ref: "#/components/runOptions/webBffMock"
 components:
   sources:
-    centralContractRepo:
+    webBffRepo:
       git:
-        url: https://github.com/specmatic-demo/central-contract-repository
+        url: https://github.com/specmatic-demo/web-bff
   services:
     webBff:
       description: "Web BFF GraphQL dependency"
       definitions:
         - definition:
             source:
-              $ref: "#/components/sources/centralContractRepo"
+              $ref: "#/components/sources/webBffRepo"
             specs:
               - spec:
-                  path: "contracts/services/web-bff/graphql/schema.graphql"
+                  path: "specs/schema.graphql"
   runOptions:
     webBffMock:
       graphqlsdl:
