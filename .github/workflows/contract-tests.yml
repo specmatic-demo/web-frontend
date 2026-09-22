@@ -23,6 +23,6 @@ jobs:
       - name: Run frontend tests
         run: npm test
 
-  specmatic:
+  contract-tests:
     uses: specmatic-demo/.github/.github/workflows/specmatic-reports.yml@main
     secrets: inherit
