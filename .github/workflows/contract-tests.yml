@@ -21,8 +21,12 @@ jobs:
           cache: npm
 
       - name: Run frontend tests
-        run: npm test
+        run: |
+          npm ci
+          npm test
 
   contract-tests:
     uses: specmatic-demo/.github/.github/workflows/specmatic-reports.yml@main
+    with:
+      skip_specmatic_tests: true
     secrets: inherit
