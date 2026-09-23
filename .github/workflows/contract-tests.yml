@@ -33,12 +33,14 @@ jobs:
           cache: npm
 
       - name: Run frontend tests
+        env:
+          SPECMATIC_CI: "true"
+          SPECMATIC_REPO_ID: ${{ github.repository_id }}
+          SPECMATIC_REPO_NAME: ${{ github.event.repository.name }}
+          SPECMATIC_REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          SPECMATIC_BUILD_ID: ${{ github.run_id }}
+          SPECMATIC_RUN_ATTEMPT: ${{ github.run_attempt }}
+          SPECMATIC_BRANCH_NAME: ${{ github.ref_name }}
         run: |
           npm ci
           npm test
-
-  contract-tests:
-    uses: specmatic-demo/.github/.github/workflows/specmatic-reports.yml@main
-    with:
-      skip_specmatic_tests: true
-    secrets: inherit
